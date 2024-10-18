@@ -13,6 +13,12 @@
     @include('partials/_navigation')
 </header>
 <main>
+    @includeWhen($errors->any(), 'partials/_errors')
+    @if(session('success'))
+        <div class="flash-success">
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="main">
         @yield('content')
     </div>
