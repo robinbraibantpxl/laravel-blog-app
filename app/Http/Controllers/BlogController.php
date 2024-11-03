@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\Blog;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -35,12 +35,18 @@ class BlogController extends Controller
         {
             $request->validate(['title' => 'Required']);
             $request->validate(['description' => ['required', 'min:10']]);
+
             $title = $request->input('title');
             $description = $request->input('description');
 
+            $newBlog = new Blog();
+            $newBlog->title = $title;
+            $newBlog->description = $description;
+            $newBlog->save();
+
             return redirect()
                 ->route('blogs.create')
-                ->with('success', "Jouw post werd succesvol verzonden met de volgende gegevens: Titel: $title Omschrijving: $description");
+                ->with('success', "Jouw post werd succesvol verzonden met de volgende gegevens: Titel: $newBlog->title Omschrijving: $newBlog->description");
         }
 
         /**
