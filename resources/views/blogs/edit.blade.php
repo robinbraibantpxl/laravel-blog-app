@@ -9,14 +9,14 @@
         @csrf
         @method('PUT')
         <label for="title">Titel</label>
-        <input type="text" name="title" id="title" value="{{ old('title') }}" class="@error('title') error-border @enderror"/>
+        <input type="text" name="title" id="title" value="{{ old('title', $blogPost->title) }}" class="@error('title') error-border @enderror"/>
         @error('title')
         <div class="error">
             {{ $message }}
         </div>
         @enderror
         <label for="description">Omschrijving</label>
-        <textarea name="description" id="description" class="@error('description') error-border @enderror">{{ old('description') }}</textarea>
+        <textarea name="description" id="description" class="@error('description') error-border @enderror">{{ old('description', $blogPost->description) }}</textarea>
         @error('description')
         <div class="error">
             {{ $message }}

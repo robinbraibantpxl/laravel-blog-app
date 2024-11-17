@@ -71,7 +71,19 @@ class BlogController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate(['title' => 'Required']);
+        $request->validate(['description' => ['required', 'min:10']]);
+
+        $blogPost = Blog::findOrFail($id);
+
+        $blogPost->title = $request->input('title');
+        $blogPost->description = $request->input('description');
+
+        $blogPost->save();
+
+        return redirect()
+            ->route('blogs.show', ['blog' => $blogPost])
+            ->with('succes', 'De blogpost werd succesvol gewijzigd');
     }
 
     /**
