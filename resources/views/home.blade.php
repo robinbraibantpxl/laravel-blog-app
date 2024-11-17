@@ -20,7 +20,9 @@
 
     @forelse($blogs as $blog)
         <div class="post-item">
-            <h2>{{$blog->title}}</h2>
+            <a href="{{ route('blogs.show', ['blog' => $blog->id]) }}">
+                <h2>{{$blog->title}}</h2>
+            </a>
             <p>{{$blog->description}}</p>
         </div>
     @empty
