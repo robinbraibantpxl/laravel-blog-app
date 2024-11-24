@@ -6,6 +6,7 @@ use App\Models\Blog;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use App\Http\Requests\BlogPostFormRequest;
 
 class BlogController extends Controller
 {
@@ -29,19 +30,10 @@ class BlogController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(BlogPostFormRequest $request): RedirectResponse
     {
-        $request->validate(['title' => 'Required']);
-        $request->validate(['description' => ['required', 'min:10']]);
-
-        $title = $request->input('title');
-        $description = $request->input('description');
-
-        $newBlog = new Blog();
-        $newBlog->title = $title;
-        $newBlog->description = $description;
-        $newBlog->save();
-
+        $validatedProperties = $request->validated();
+        $newBlog = Blog::create($validatedProperties);
         return redirect()
             ->route('blogs.create')
             ->with('success', "Jouw post werd succesvol verzonden met de volgende gegevens: Titel: $newBlog->title Omschrijving: $newBlog->description");
@@ -50,46 +42,36 @@ class BlogController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Blog $blog)
     {
-        $blogPost = Blog::findOrFail($id);
-        return view('blogs.show', ['blogPost' => $blogPost]);
+//        $blogPost = Blog::findOrFail($id);
+        return view('blogs.show', ['blogPost' => $blog]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Blog $blog)
     {
-        $blogPost = Blog::findOrFail($id);
-        return view('blogs.edit', ['blogPost' => $blogPost]);
-
+        return view('blogs.edit', ['blogPost' => $blog]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(BlogPostFormRequest $request, Blog $blog)
     {
-        $request->validate(['title' => 'Required']);
-        $request->validate(['description' => ['required', 'min:10']]);
-
-        $blogPost = Blog::findOrFail($id);
-
-        $blogPost->title = $request->input('title');
-        $blogPost->description = $request->input('description');
-
-        $blogPost->save();
-
+        $validatedProperties = $request->validated();
+        Blog::update($validatedProperties);
         return redirect()
-            ->route('blogs.show', ['blog' => $blogPost])
+            ->route('blogs.show', ['blog' => $blog])
             ->with('succes', 'De blogpost werd succesvol gewijzigd');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Blog $blog)
     {
         //
     }
