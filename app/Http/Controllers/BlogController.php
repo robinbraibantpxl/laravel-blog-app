@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Blog;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+
 use App\Http\Requests\BlogPostFormRequest;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class BlogController extends Controller
 {
@@ -33,7 +36,10 @@ class BlogController extends Controller
     public function store(BlogPostFormRequest $request): RedirectResponse
     {
         $validatedProperties = $request->validated();
-        $newBlog = Blog::create($validatedProperties);
+//        Auth::user()->blogs()->create($validatedProperties);
+//        $id = Auth::user()->id;
+//        $newBlog = Blog::create($validatedProperties);
+        $newBlog = $request->user()->blogs()->create($validatedProperties);
         return redirect()
             ->route('blogs.create')
             ->with('success', "Jouw post werd succesvol verzonden met de volgende gegevens: Titel: $newBlog->title Omschrijving: $newBlog->description");
@@ -51,8 +57,12 @@ class BlogController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Blog $blog)
+    public function edit(Request $request, Blog $blog)
     {
+        if ($request->user()->cannot('update', $blog)) {
+            abort(403);
+        }
+
         return view('blogs.edit', ['blogPost' => $blog]);
     }
 
@@ -61,6 +71,7 @@ class BlogController extends Controller
      */
     public function update(BlogPostFormRequest $request, Blog $blog)
     {
+        Gate::authorize("update", $blog);
         $validatedProperties = $request->validated();
         Blog::update($validatedProperties);
         return redirect()
@@ -73,6 +84,10 @@ class BlogController extends Controller
      */
     public function destroy(Blog $blog)
     {
-        //
+        Gate::authorize("delete", $blog);
+        $destroyed = Blog::destroy($blog->id);
+        return redirect()
+            ->route('home')
+            ->with('succes', 'De blogpost werd succesvol verwijderd');
     }
 }

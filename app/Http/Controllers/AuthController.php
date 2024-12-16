@@ -19,7 +19,7 @@ class AuthController extends Controller
 
         User::create($credentials);
 
-        return redirect()->route('register')->with('success', 'Registratie voltooid! Je kan nu inloggen');
+        return redirect()->route('login')->with('success', 'Registratie voltooid! Je kan nu inloggen');
     }
 
     public function login(Request $request)

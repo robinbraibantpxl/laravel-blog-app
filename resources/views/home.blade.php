@@ -24,6 +24,7 @@
                 <h2>{{$blog->title}}</h2>
             </a>
             <p>{{$blog->description}}</p>
+            <small>Geschreven door <b>{{$blog->user->name}}</b></small>
         </div>
     @empty
         <p>Er zijn momenteel nog geen blogs beschikbaar</p>

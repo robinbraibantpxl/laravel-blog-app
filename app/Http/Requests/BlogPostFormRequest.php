@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Blog;
 use Illuminate\Foundation\Http\FormRequest;
 
 class BlogPostFormRequest extends FormRequest
@@ -13,6 +14,11 @@ class BlogPostFormRequest extends FormRequest
     {
         return true;
     }
+//    public function authorize(): bool
+//    {
+//        $blog = Blog::find($this->route('post'));
+//        return $blog && $this->user()->can('update', $blog);
+//    }
 
     /**
      * Get the validation rules that apply to the request.
